@@ -131,7 +131,7 @@ body {
   position: fixed;
   top: 0;
   right: 0;
-  bottom: 0;
+  bottom: env(safe-area-inset-bottom, 0px);
   left: 0;
   overflow: hidden;
   display: flex;
@@ -579,8 +579,7 @@ body {
 /* ========== Action Buttons ========== */
 .action-section {
   width: 100%;
-  padding: 0.3rem 0.8rem;
-  padding-bottom: max(0.3rem, env(safe-area-inset-bottom));
+  padding: 0.3rem 0.8rem 0.4rem;
   background: #0a0a1a;
   flex-shrink: 0;
 }
