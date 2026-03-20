@@ -128,15 +128,21 @@ body {
 /* ========== Game Screen ========== */
 #game-screen {
   padding: 0;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
   position: fixed;
   top: 0;
   left: 0;
+  right: 0;
   width: 100%;
   height: calc(var(--app-vh, 1vh) * 100);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+@supports (padding: max(0px)) {
+  #game-screen {
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
 }
 
 /* Top bar: score, timer, round */
@@ -581,6 +587,7 @@ body {
 .action-section {
   width: 100%;
   padding: 0.3rem 0.8rem 0.4rem;
+  padding-bottom: calc(0.4rem + env(safe-area-inset-bottom, 0px));
   background: #0a0a1a;
   flex-shrink: 0;
 }
@@ -897,7 +904,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  overflow: hidden;
 }
 
 .review-card-header {

@@ -10,14 +10,12 @@
 <script>
 (function(){
   function setVh(){
-    var h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-    document.documentElement.style.setProperty('--app-vh', h * 0.01 + 'px');
+    document.documentElement.style.setProperty('--app-vh', window.innerHeight * 0.01 + 'px');
   }
   setVh();
   window.addEventListener('resize', setVh);
-  if(window.visualViewport){
-    window.visualViewport.addEventListener('resize', setVh);
-  }
+  window.addEventListener('orientationchange', function(){ setTimeout(setVh, 100); });
+  setTimeout(setVh, 300);
 })();
 </script>
 
@@ -137,7 +135,7 @@
         <button class="action-btn" id="btn-ron" disabled>ロン</button>
         <button class="action-btn" id="btn-tsumo" disabled>ツモ</button>
         <button class="action-btn" id="btn-skip" disabled>Skip</button>
-        <button class="action-btn" id="btn-minogashi" disabled>見逃し</button>
+        <button class="action-btn" id="btn-minogashi" disabled>見逃した</button>
       </div>
     </div>
 
