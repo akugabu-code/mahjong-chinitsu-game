@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>清一色トレーニング</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ==================== メニュー画面 ==================== -->
+  <div id="menu-screen" class="screen">
+    <div class="menu-title">清一色トレーニング</div>
+    <div class="menu-subtitle">実践形式で待ち判断力を鍛える</div>
+
+    <div class="menu-section">
+      <h3>難易度</h3>
+      <div class="option-group" id="difficulty-options">
+        <button class="option-btn" data-value="easy">易<br><small>1-2種待ち</small></button>
+        <button class="option-btn selected" data-value="medium">普<br><small>3-4種待ち</small></button>
+        <button class="option-btn" data-value="hard">難<br><small>5種以上</small></button>
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <h3>制限時間</h3>
+      <div class="option-group" id="time-options">
+        <button class="option-btn" data-value="short">30秒</button>
+        <button class="option-btn selected" data-value="medium">60秒</button>
+        <button class="option-btn" data-value="long">90秒</button>
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <h3>速度（捨て牌の間隔）</h3>
+      <div class="option-group" id="speed-options">
+        <button class="option-btn" data-value="fast">2秒</button>
+        <button class="option-btn selected" data-value="normal">3秒</button>
+        <button class="option-btn" data-value="slow">5秒</button>
+      </div>
+    </div>
+
+    <button class="start-btn" id="start-btn">ゲーム開始</button>
+    <button class="review-menu-btn" id="review-menu-btn">振り返る</button>
+    <button class="review-menu-btn" id="ranking-menu-btn">🏆 ランキング</button>
+    <button class="review-menu-btn" id="analysis-menu-btn">📊 苦手分析</button>
+    <button class="review-menu-btn" id="records-menu-btn">📌 通算記録</button>
+  </div>
+
+  <!-- ==================== ゲーム画面 ==================== -->
+  <div id="game-screen" class="screen hidden">
+
+    <!-- トップバー -->
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <button class="home-btn" id="home-btn">⌂ メニュー</button>
+        <span id="round-display" style="display:none">R1</span>
+      </div>
+      <div class="top-bar-center">
+        <span id="furiten-status"></span>
+      </div>
+      <div class="top-bar-right">
+        <div class="hud-block">
+          <span class="hud-label">スコア</span>
+          <span id="score-display">0</span>
+        </div>
+        <div class="hud-sep"></div>
+        <div class="hud-block hud-block-timer">
+          <span class="hud-label">残り時間</span>
+          <span id="timer-display">2:00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 雀卓エリア -->
+    <div class="table-area">
+
+      <!-- 対面（上） -->
+      <div class="river-area toimen">
+        <div class="seat-marker" id="seat-toimen">対</div>
+        <div class="river-container" id="river-toimen"></div>
+      </div>
+
+      <!-- 上家（左） -->
+      <div class="river-area kamicha">
+        <div class="seat-marker" id="seat-kamicha">上</div>
+        <div class="river-container" id="river-kamicha"></div>
+      </div>
+
+      <!-- 中央 -->
+      <div class="table-center">
+        <div id="round-label" class="round-label">東1局</div>
+        <div id="dora-display"></div>
+      </div>
+
+      <!-- 下家（右） -->
+      <div class="river-area shimocha">
+        <div class="river-container" id="river-shimocha"></div>
+        <div class="seat-marker" id="seat-shimocha">下</div>
+      </div>
+
+      <!-- 自分（下） -->
+      <div class="river-area self-river">
+        <div class="river-container" id="river-self"></div>
+        <div class="seat-marker" id="seat-self">自</div>
+      </div>
+
+    </div>
+
+    <!-- 手牌エリア -->
+    <div class="hand-section">
+      <div class="hand-wrapper">
+        <div id="hand-tiles"></div>
+        <div id="tsumo-area"></div>
+      </div>
+    </div>
+
+    <!-- アクションボタン -->
+    <div class="action-section">
+      <div class="action-timer-bar-container">
+        <div id="action-timer-bar"></div>
+      </div>
+      <div class="action-buttons">
+        <button class="action-btn" id="btn-ron" disabled>ロン</button>
+        <button class="action-btn" id="btn-tsumo" disabled>ツモ</button>
+        <button class="action-btn" id="btn-skip" disabled>Skip</button>
+        <button class="action-btn" id="btn-minogashi" disabled>見逃し</button>
+      </div>
+    </div>
+
+    <!-- ラウンド結果オーバーレイ -->
+    <div id="result-overlay">
+      <div id="result-message" class="result-message"></div>
+      <div id="result-points" class="result-points"></div>
+      <div id="result-waits-label" class="result-waits-label"></div>
+      <div id="result-waits" class="result-waits"></div>
+    </div>
+
+  </div>
+
+  <!-- ==================== ゲームオーバー画面 ==================== -->
+  <div id="gameover-screen" class="screen hidden">
+    <div class="gameover-title">ゲーム終了</div>
+
+    <div class="gameover-stats">
+      <div class="stat-row">
+        <span class="stat-label">スコア</span>
+        <span class="stat-value score-final" id="final-score">0点</span>
+      </div>
+      <div class="stat-row" id="rank-row" style="display:none">
+        <span class="stat-label">ランキング</span>
+        <span class="stat-value" id="final-rank"></span>
+      </div>
+      <div class="stat-row" id="best-row" style="display:none">
+        <span class="stat-label">同条件最高</span>
+        <span class="stat-value" id="final-best" style="color:#ffd700"></span>
+      </div>
+      <div class="gameover-stats-divider"></div>
+      <div class="stat-row">
+        <span class="stat-label">局数</span>
+        <span class="stat-value" id="final-rounds">0局</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">正解</span>
+        <span class="stat-value" id="final-correct" style="color:#00d4aa">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">誤宣言</span>
+        <span class="stat-value" id="final-wrong" style="color:#ff4444">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">見逃し</span>
+        <span class="stat-value" id="final-miss" style="color:#ffd700">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">正解率</span>
+        <span class="stat-value" id="final-rate">0%</span>
+      </div>
+    </div>
+
+    <button class="retry-btn" id="retry-btn">もう一度プレイ</button>
+    <button class="back-menu-btn" id="back-menu-btn">メニューに戻る</button>
+
+    <div class="review-section hidden" id="review-section">
+      <div class="review-section-title">解答確認</div>
+      <div class="review-list" id="review-list"></div>
+    </div>
+  </div>
+
+  <!-- ==================== 振り返り画面 ==================== -->
+  <div id="review-screen" class="screen hidden">
+    <div class="review-screen-header">
+      <div class="review-screen-title">振り返り</div>
+      <span class="review-screen-count" id="review-screen-count"></span>
+      <button class="review-home-btn" id="review-home-btn">⌂ メニュー</button>
+    </div>
+    <div class="review-pagination" id="review-pagination-top">
+      <button class="review-page-btn" id="review-prev-btn-top">&laquo; 前の5件</button>
+      <span class="review-page-info" id="review-page-info-top"></span>
+      <button class="review-page-btn" id="review-next-btn-top">次の5件 &raquo;</button>
+    </div>
+    <div class="review-screen-list" id="review-screen-list"></div>
+    <div class="review-pagination" id="review-pagination">
+      <button class="review-page-btn" id="review-prev-btn">&laquo; 前の5件</button>
+      <span class="review-page-info" id="review-page-info"></span>
+      <button class="review-page-btn" id="review-next-btn">次の5件 &raquo;</button>
+    </div>
+    <button class="review-clear-btn" id="review-clear-btn">記録をクリア</button>
+  </div>
+
+  <!-- ==================== ランキング画面 ==================== -->
+  <div id="ranking-screen" class="screen hidden">
+    <div class="ranking-header">
+      <div class="ranking-title">🏆 ランキング</div>
+      <button class="ranking-home-btn" id="ranking-home-btn">⌂ メニュー</button>
+    </div>
+    <div class="ranking-selectors">
+      <div class="ranking-selector-group" id="ranking-diff-options">
+        <button class="option-btn" data-value="easy">易</button>
+        <button class="option-btn selected" data-value="medium">普</button>
+        <button class="option-btn" data-value="hard">難</button>
+      </div>
+      <div class="ranking-selector-group" id="ranking-time-options">
+        <button class="option-btn" data-value="short">30秒</button>
+        <button class="option-btn selected" data-value="medium">60秒</button>
+        <button class="option-btn" data-value="long">90秒</button>
+      </div>
+      <div class="ranking-selector-group" id="ranking-speed-options">
+        <button class="option-btn" data-value="fast">2秒</button>
+        <button class="option-btn selected" data-value="normal">3秒</button>
+        <button class="option-btn" data-value="slow">5秒</button>
+      </div>
+    </div>
+    <div class="ranking-list" id="ranking-list"></div>
+    <button class="ranking-clear-btn" id="ranking-clear-btn">このモードの記録をクリア</button>
+  </div>
+
+  <!-- ==================== 通算記録画面 ==================== -->
+  <div id="records-screen" class="screen hidden">
+    <div class="ranking-header">
+      <div class="ranking-title">📌 通算記録</div>
+      <button class="ranking-home-btn" id="records-home-btn">⌂ メニュー</button>
+    </div>
+    <div id="records-content" class="records-content"></div>
+    <button class="ranking-clear-btn" id="records-clear-btn">記録をリセット</button>
+  </div>
+
+  <!-- ==================== 苦手分析画面 ==================== -->
+  <div id="analysis-screen" class="screen hidden">
+    <div class="ranking-header">
+      <div class="ranking-title">📊 苦手分析</div>
+      <button class="ranking-home-btn" id="analysis-home-btn">⌂ メニュー</button>
+    </div>
+    <div id="analysis-content" class="analysis-content"></div>
+    <button class="ranking-clear-btn" id="analysis-clear-btn">記録をクリア</button>
+  </div>
+
+  <!-- Scripts (順序重要: 依存関係) -->
+  <script src="js/tile.js"></script>
+  <script src="js/hand.js"></script>
+  <script src="js/yaku.js"></script>
+  <script src="js/score.js"></script>
+  <script src="js/scenario.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
