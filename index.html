@@ -10,10 +10,14 @@
 <script>
 (function(){
   function setVh(){
-    document.documentElement.style.setProperty('--app-vh', window.innerHeight * 0.01 + 'px');
+    var h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    document.documentElement.style.setProperty('--app-vh', h * 0.01 + 'px');
   }
   setVh();
   window.addEventListener('resize', setVh);
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize', setVh);
+  }
 })();
 </script>
 
