@@ -883,7 +883,7 @@ body {
 .review-list {
   max-height: 38vh;
   overflow-y: auto;
-  padding: 0.4rem;
+  padding: 0.3rem;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -892,10 +892,11 @@ body {
 .review-card {
   background: #0d1a30;
   border-radius: 7px;
-  padding: 0.45rem 0.55rem;
+  padding: 0.45rem 0.3rem;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  overflow: hidden;
 }
 
 .review-card-header {
@@ -957,7 +958,8 @@ body {
   align-items: center;
   gap: 4px;
   flex-wrap: nowrap;
-  overflow: hidden;
+  overflow-x: auto;
+  min-width: 0;
 }
 
 .tile-mini .tile-img {
