@@ -130,9 +130,9 @@ body {
   padding: 0;
   position: fixed;
   top: 0;
-  right: 0;
-  bottom: env(safe-area-inset-bottom, 0px);
   left: 0;
+  width: 100%;
+  height: calc(var(--app-vh, 1vh) * 100);
   overflow: hidden;
   display: flex;
   flex-direction: column;
